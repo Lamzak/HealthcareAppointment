@@ -1,18 +1,16 @@
 services:
-  # 1. Backend (API)
   backend:
     build:
       context: .
-      dockerfile: HealthcareAppointment.Api/Dockerfile
+      dockerfile: HealthcareAppointment/HealthcareAppointment.Api/Dockerfile
     ports:
-      - "7226:8080" # Maps local port 7226 to container port 8080 (http)
+      - "7226:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Data Source=/app/healthcare.db
     volumes:
-      - ./HealthcareAppointment.Api/healthcare.db:/app/healthcare.db
+      - ./HealthcareAppointment/HealthcareAppointment.Api/healthcare.db:/app/healthcare.db
 
-  # 2. Frontend (Next.js/React)
   frontend:
     build:
       context: ./healthcare-frontend
