@@ -7,24 +7,31 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["HealthcareAppointment/HealthcareAppointment.csproj", "HealthcareAppointment/"]
-RUN dotnet restore "./HealthcareAppointment/HealthcareAppointment.csproj"
+# FIX: Added ".Api" to folder and project name to match your solution
+COPY ["HealthcareAppointment.Api/HealthcareAppointment.Api.csproj", "HealthcareAppointment.Api/"]
+RUN dotnet restore "./HealthcareAppointment.Api/HealthcareAppointment.Api.csproj"
 COPY . .
-WORKDIR "/src/HealthcareAppointment"
-RUN dotnet build "./HealthcareAppointment.csproj" -c $BUILD_CONFIGURATION -o /app/build
+# FIX: Navigate to the correct folder
+WORKDIR "/src/HealthcareAppointment.Api"
+# FIX: Build the correct project
+RUN dotnet build "./HealthcareAppointment.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./HealthcareAppointment.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+# FIX: Publish the correct project
+RUN dotnet publish "./HealthcareAppointment.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "HealthcareAppointment.dll"]
+# FIX: Entrypoint dll likely includes .Api if the project does. 
+# Check your bin/Debug/net9.0 folder. If the file is HealthcareAppointment.Api.dll, use that.
+# If it is just HealthcareAppointment.dll, keep it as is.
+# Safest bet based on project name is .Api.dll:
+ENTRYPOINT ["dotnet", "HealthcareAppointment.Api.dll"]
