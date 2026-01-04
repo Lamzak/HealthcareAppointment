@@ -1,0 +1,18 @@
+.vs/
+*.user
+*.suo
+
+# Build files
+bin/
+obj/
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+
+# Frontend dependencies (Huge folders)
+node_modules/
+.next/
+.env.local
+npm-debug.log*
