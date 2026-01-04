@@ -25,7 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Domain\HealthcareAppointment.Domain.csproj" />
+		<ProjectReference Include="..\HealthcareAppointment.Domain\HealthcareAppointment.Domain.csproj" />
 		<ProjectReference Include="..\HealthcareAppointment.Application\HealthcareAppointment.Application.csproj" />
 	</ItemGroup>
 
